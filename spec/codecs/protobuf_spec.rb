@@ -27,7 +27,7 @@ describe LogStash::Codecs::Protobuf do
 
     it "should return an event from protobuf encoded data" do
 
-      data = {:colour => 'rainbow', :horn_length => 18, :last_seen => 1420081471, :has_wings => true}
+      data = {:colour => 'rainbow', :horn_length => 18, :last_seen => 1420081471, :has_wings => true, :height => 6.3, :weight => 100.47}
       unicorn = Animal::Unicorn.new(data)
 
       plugin_unicorn.decode(unicorn.serialize_to_string) do |event|
@@ -35,6 +35,8 @@ describe LogStash::Codecs::Protobuf do
         expect(event.get("horn_length") ).to eq(data[:horn_length] )
         expect(event.get("last_seen") ).to eq(data[:last_seen] )
         expect(event.get("has_wings") ).to eq(data[:has_wings] )
+        expect(event.get("height") ).to eq(data[:height] )
+        expect(event.get("weight") ).to be_within(0.01).of(data[:weight] )
       end
     end # it
 

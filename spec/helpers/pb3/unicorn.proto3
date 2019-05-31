@@ -14,6 +14,8 @@ message Unicorn {
     string version = 8; # Logstash adds this to the event, needed for encoder test
     Unicorn mother = 9;
     Unicorn father = 10;
+    double height = 11;
+    float weight = 12;
 }
 
 enum Colour {

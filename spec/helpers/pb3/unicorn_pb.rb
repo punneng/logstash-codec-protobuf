@@ -15,6 +15,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :version, :string, 8
     optional :mother, :message, 9, "Unicorn"
     optional :father, :message, 10, "Unicorn"
+    optional :height, :double, 11
+    optional :weight, :float, 12
   end
   add_enum "Colour" do
     value :UNDEFINED, 0

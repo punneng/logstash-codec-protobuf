@@ -86,7 +86,7 @@ describe LogStash::Codecs::Protobuf do
 
       unicorn_class = Google::Protobuf::DescriptorPool.generated_pool.lookup("Unicorn").msgclass
       data = {:name => 'Pinkie', :age => 18, :is_pegasus => false, :favourite_numbers => [4711,23], :fur_colour => Colour::PINK,
-      :favourite_colours => [Colour::GREEN, Colour::BLUE]
+      :favourite_colours => [Colour::GREEN, Colour::BLUE], :height => 6.3, :weight => 100.47
       }
 
       unicorn_object = unicorn_class.new(data)
@@ -98,6 +98,8 @@ describe LogStash::Codecs::Protobuf do
         expect(event.get("favourite_numbers") ).to eq(data[:favourite_numbers])
         expect(event.get("favourite_colours") ).to eq(["GREEN","BLUE"])
         expect(event.get("is_pegasus") ).to eq(data[:is_pegasus] )
+        expect(event.get("height") ).to eq(data[:height] )
+        expect(event.get("weight") ).to be_within(0.01).of(data[:weight] )
       end
     end # it
   end # context
@@ -313,7 +315,8 @@ describe LogStash::Codecs::Protobuf do
       next LogStash::Codecs::Protobuf.new("class_name" => "Unicorn", "include_path" => [pb_include_path + '/pb3/unicorn_pb.rb'], "protobuf_version" => 3)
     end
 
-    event3 = LogStash::Event.new("name" => "Pinkie", "age" => 18, "is_pegasus" => false, "favourite_numbers" => [1,2,3], "fur_colour" => Colour::PINK, "favourite_colours" => [1,5]      )
+    event3 = LogStash::Event.new("name" => "Pinkie", "age" => 18, "is_pegasus" => false, "favourite_numbers" => [1,2,3] \
+      , "fur_colour" => Colour::PINK, "favourite_colours" => [1,5], "height" => 6.3, "weight" => 100.47      )
 
     it "should return protobuf encoded data for testcase 3" do
 
@@ -328,6 +331,9 @@ describe LogStash::Codecs::Protobuf do
         expect(decoded_data.fur_colour ).to eq(:PINK)
         expect(decoded_data.favourite_numbers ).to eq(event.get("favourite_numbers") )
         expect(decoded_data.favourite_colours ).to eq([:BLUE,:WHITE] )
+        expect(decoded_data.height).to eq(event.get("height"))
+        expect(decoded_data.weight).to be_within(0.01).of(event.get("weight"))
+
       end # subject.on_event
 
       subject.encode(event3)
@@ -346,7 +352,8 @@ describe LogStash::Codecs::Protobuf do
     end
 
     event4 = LogStash::Event.new("name" => "Horst", "age" => 23, "is_pegasus" => true, "mother" => \
-        {"name" => "Mom", "age" => 47}, "father" => {"name"=> "Daddy", "age"=> 50, "fur_colour" => 3 } # 3 == SILVER
+        {"name" => "Mom", "age" => 47}, "father" => {"name"=> "Daddy", "age"=> 50, "fur_colour" => 3 }, # 3 == SILVER
+        "height" => 6.3, "weight" => 100.47
       )
 
     it "should return protobuf encoded data for testcase 4" do
@@ -365,7 +372,8 @@ describe LogStash::Codecs::Protobuf do
         expect(decoded_data.father.name ).to eq(event.get("father")["name"] )
         expect(decoded_data.father.age ).to eq(event.get("father")["age"] )
         expect(decoded_data.father.fur_colour ).to eq(:SILVER)
-
+        expect(decoded_data.height).to eq(event.get("height"))
+        expect(decoded_data.weight).to be_within(0.01).of(event.get("weight"))
 
       end # subject4.on_event
       subject.encode(event4)

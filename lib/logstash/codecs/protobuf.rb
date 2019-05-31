@@ -383,7 +383,7 @@ class LogStash::Codecs::Protobuf < LogStash::Codecs::Base
 
 
   def should_convert_to_string?(v)
-    !(v.is_a?(Fixnum) || v.is_a?(::Hash) || v.is_a?(::Array) || [true, false].include?(v))
+    !(v.is_a?(Fixnum) || v.is_a?(Float) || v.is_a?(::Hash) || v.is_a?(::Array) || [true, false].include?(v))
   end
 
 
