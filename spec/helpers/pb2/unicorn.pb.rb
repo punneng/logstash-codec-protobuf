@@ -14,6 +14,8 @@ module Animal
     optional :int32, :horn_length, 2
     optional :int32, :last_seen, 3
     optional :bool, :has_wings, 4
+    optional :double, :height, 5
+    optional :float, :weight, 6
   end
 
 end
